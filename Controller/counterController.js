@@ -1,4 +1,4 @@
-const Counter = require('../Models/parkinglot').Counter;
+const Counter = require('../Models/Account').Counter;
 
 const getCounter = async (req, res) => {
     const counter = await Counter.find()
@@ -6,18 +6,17 @@ const getCounter = async (req, res) => {
     if (!counter) {
         res.status(404).json({ msg: 'Counter not found' });
     }else{
-        // const counterObject = counter.toObject();
         res.json(counter)
     }
 }
 const resetCounter = async (req, res) => {
   try {
-    const counter = await Counter.findById('parking_seq');
+    const counter = await Counter.findById('account_seq');
     if (!counter) {
       res.status(404).send('No se encontró el contador');
       return;
     }
-    const updatedCounter = await Counter.updateOne({ _id: 'parking_seq' }, { $set: { seq: 0 } });
+    const updatedCounter = await Counter.updateOne({ _id: 'account_seq' }, { $set: { seq: 0 } });
     if (updatedCounter.nModified === 0) {
       res.send('El contador ya estaba en 0');
     } else {
@@ -32,7 +31,7 @@ const resetCounter = async (req, res) => {
 const updateCounter = async (req, res) => {
     let msg = 'Counter updated'
     try {
-        await Counter.updateOne({ _id: 'parking_seq' }, { $set: { seq: req.params.counter} });
+        await Counter.updateOne({ _id: 'account_seq' }, { $set: { seq: req.params.counter} });
     } catch (error) {
         console.error('Error updating counter:', error);
         msg = 'Error updating counter';
@@ -40,20 +39,8 @@ const updateCounter = async (req, res) => {
 
     res.json({ msg });
 }
-const updateMaxCounter = async (req, res) => {
-    let msg = 'Max counter updated'
-    try {
-        await Counter.updateOne({ _id: 'parking_seq' }, { $set: { max: req.params.max} });
-    } catch (error) {
-        console.error('Error updating max counter:', error);
-        msg = 'Error updating max counter';
-    }
-
-    res.json({ msg });
-}
 module.exports = {
   resetCounter,
   getCounter,
-  updateCounter,
-  updateMaxCounter
+  updateCounter
 };
